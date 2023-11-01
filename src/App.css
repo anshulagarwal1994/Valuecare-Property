@@ -1829,3 +1829,8 @@ body .pr-title-right a {
   border: none;
   height: auto;
 }
+.NoData{
+  color: red;
+  text-align: center;
+  position: fixed;
+}

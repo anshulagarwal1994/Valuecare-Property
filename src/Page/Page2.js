@@ -110,12 +110,26 @@ function Page2() {
             for (let index = 0; index < getSingle.length; index++) {
               imageUrl = "https://servicesapi.valuecare.org.au/" + getSingle[0];
             }
+            var addressLine1 = ""
+            if(item.AddrLine1 != ""){
+              addressLine1 = item.AddrLine1 + ", "
+            }
+          
+            var addressLine2 = ""
+            if(item.AddrLine2 != ""){
+              addressLine2 = item.AddrLine2 + ", "
+            }
+            
+            var addressLine3 = ""
+            if(item.AddrLine3 != ""){
+              addressLine3 = item.AddrLine3 + ", "
+            }
+
             return {
               title:
-                item.AddrLine1 +
-                ", " +
-                item.AddrLine2 +
-                ", " +
+              addressLine1 +
+              addressLine2 +
+              addressLine3 +
                 item.City +
                 ", " +
                 item.State +
@@ -149,87 +163,191 @@ function Page2() {
   };
   const displayReviewSites = () => {
     // document.getElementById("propertyCount").innerHTML = res.data.data[0].length
-    // console.log("List = ", list);
-    return list.map((data) => {
-      var hrefurl = "/Propertydetails/?id=" + data.PropertyID;
-      const propertyFeatureString = data.PropertyFeature;
-      const propertyFeatureArray = data.PropertyFeature.split(",");
-      let propertydata = [];
+    console.log("List = ", list.length);
 
-      const propertyImages = data.URL.split(",");
-      for (let i = 0; i < propertyImages.length; i++) {
-        propertydata.push({
-          imgSrc: "https://servicesapi.valuecare.org.au/" + propertyImages[i],
-        });
-      }
-      let htmlFeatures = "";
+    if(list.length > 0){
 
-      console.log("propertyData = ", propertydata);
-
-      for (let j = 0; j < propertyFeatureArray.length; j++) {
-        htmlFeatures += `<li>
-            
-             <img
-               src="https://wordpress-419965-2723092.cloudwaysapps.com//wp-content/themes/valueCare/images/accessible.svg"
-               alt="Accessible"
-             />
-             <span>${propertyFeatureArray[j]}</span>
-          </li>`;
-      }
-
-      localStorage.removeItem("AvailbleProperty");
-      localStorage.removeItem("bedroom");
-      localStorage.removeItem("bathroom");
-      localStorage.removeItem("propertyType");
-      localStorage.removeItem("states");
-      localStorage.removeItem("suburb");
-      localStorage.removeItem("Search");
-      return (
-        <div className="pm-list-box">
-          <div className="pm-image">
-            <Slide>
-              {propertydata.map((item, index) => (
-                <span key={index}>
-                  <img src={item.imgSrc} alt="Property Image"></img>
+      return list.map((data) => {
+        var hrefurl = "/Propertydetails/?id=" + data.PropertyID;
+        const propertyFeatureString = data.PropertyFeature;
+        const propertyFeatureArray = data.PropertyFeature.split(",");
+        let propertydata = [];
+  
+        const propertyImages = data.URL.split(",");
+        for (let i = 0; i < propertyImages.length; i++) {
+          propertydata.push({
+            imgSrc: "https://servicesapi.valuecare.org.au/" + propertyImages[i],
+          });
+        }
+        let htmlFeatures = "";
+  
+        console.log("propertyData = ", propertydata);
+  
+        for (let j = 0; j < propertyFeatureArray.length; j++) {
+          htmlFeatures += `<li>
+              
+               <img
+                 src="https://wordpress-419965-2723092.cloudwaysapps.com//wp-content/themes/valueCare/images/accessible.svg"
+                 alt="Accessible"
+               />
+               <span>${propertyFeatureArray[j]}</span>
+            </li>`;
+        }
+  
+        localStorage.removeItem("AvailbleProperty");
+        localStorage.removeItem("bedroom");
+        localStorage.removeItem("bathroom");
+        localStorage.removeItem("propertyType");
+        localStorage.removeItem("states");
+        localStorage.removeItem("suburb");
+        localStorage.removeItem("Search");
+        return (
+          <div className="pm-list-box">
+            <div className="pm-image">
+              <Slide>
+                {propertydata.map((item, index) => (
+                  <span key={index}>
+                    <img src={item.imgSrc} alt="Property Image"></img>
+                  </span>
+                ))}
+              </Slide>
+            </div>
+  
+            <div className="pm-content">
+              <div className="pm-category">
+                <span>{data.PropertyType}</span>
+              </div>
+              <div className="pm-name">
+                <a  href={hrefurl}>
+                <h3>
+                  {data.AddrLine1 + " "}
+                  {data.AddrLine2 + " "}
+                  {data.AddrLine3 + ", "}
+                  {data.City ? data.City + ", " : ""}
+                  {data.State ? data.State + ", " : ""}
+                  {data.PostalCode ? data.PostalCode + ", " : ""}
+                  {"Australia"}
+                </h3></a>
+              </div>
+              <div className="pm-location">
+                <p>{data.BriefDescription}</p>
+              </div>
+              <div className="pm-avail">
+                <span>
+                  <b>{data.TotalBedroomCount}</b> Bedreooms
                 </span>
-              ))}
-            </Slide>
+                <span>
+                  <b>{data.BathroomCount}</b> Bathrooms
+                </span>
+              </div>
+              <div className="pm-more">
+                <a href={hrefurl}>Learn more</a>
+              </div>
+            </div>
           </div>
+        );
+      });
 
-          <div className="pm-content">
-            <div className="pm-category">
-              <span>{data.PropertyType}</span>
-            </div>
-            <div className="pm-name">
-              <a  href={hrefurl}>
-              <h3>
-                {data.AddrLine1 + " "}
-                {data.AddrLine2 + " "}
-                {data.AddrLine3 + ", "}
-                {data.City ? data.City + ", " : ""}
-                {data.State ? data.State + ", " : ""}
-                {data.PostalCode ? data.PostalCode + ", " : ""}
-                {"Australia"}
-              </h3></a>
-            </div>
-            <div className="pm-location">
-              <p>{data.BriefDescription}</p>
-            </div>
-            <div className="pm-avail">
-              <span>
-                <b>{data.TotalBedroomCount}</b> Bedreooms
-              </span>
-              <span>
-                <b>{data.BathroomCount}</b> Bathrooms
-              </span>
-            </div>
-            <div className="pm-more">
-              <a href={hrefurl}>Learn more</a>
-            </div>
-          </div>
-        </div>
+    }else{
+      // document.getElementById("propertyCount").innerHTML =
+      //         "0";
+      // localStorage.removeItem("AvailbleProperty");
+      //   localStorage.removeItem("bedroom");
+      //   localStorage.removeItem("bathroom");
+      //   localStorage.removeItem("propertyType");
+      //   localStorage.removeItem("states");
+      //   localStorage.removeItem("suburb");
+      //   localStorage.removeItem("Search");
+      return (
+        
+        <div className="pm-content">
+        <span class = "NoData">No Property available for this search.</span>
+      </div>
+  
       );
-    });
+
+    }
+
+    // return list.map((data) => {
+    //   var hrefurl = "/Propertydetails/?id=" + data.PropertyID;
+    //   const propertyFeatureString = data.PropertyFeature;
+    //   const propertyFeatureArray = data.PropertyFeature.split(",");
+    //   let propertydata = [];
+
+    //   const propertyImages = data.URL.split(",");
+    //   for (let i = 0; i < propertyImages.length; i++) {
+    //     propertydata.push({
+    //       imgSrc: "https://servicesapi.valuecare.org.au/" + propertyImages[i],
+    //     });
+    //   }
+    //   let htmlFeatures = "";
+
+    //   console.log("propertyData = ", propertydata);
+
+    //   for (let j = 0; j < propertyFeatureArray.length; j++) {
+    //     htmlFeatures += `<li>
+            
+    //          <img
+    //            src="https://wordpress-419965-2723092.cloudwaysapps.com//wp-content/themes/valueCare/images/accessible.svg"
+    //            alt="Accessible"
+    //          />
+    //          <span>${propertyFeatureArray[j]}</span>
+    //       </li>`;
+    //   }
+
+    //   localStorage.removeItem("AvailbleProperty");
+    //   localStorage.removeItem("bedroom");
+    //   localStorage.removeItem("bathroom");
+    //   localStorage.removeItem("propertyType");
+    //   localStorage.removeItem("states");
+    //   localStorage.removeItem("suburb");
+    //   localStorage.removeItem("Search");
+    //   return (
+    //     <div className="pm-list-box">
+    //       <div className="pm-image">
+    //         <Slide>
+    //           {propertydata.map((item, index) => (
+    //             <span key={index}>
+    //               <img src={item.imgSrc} alt="Property Image"></img>
+    //             </span>
+    //           ))}
+    //         </Slide>
+    //       </div>
+
+    //       <div className="pm-content">
+    //         <div className="pm-category">
+    //           <span>{data.PropertyType}</span>
+    //         </div>
+    //         <div className="pm-name">
+    //           <a  href={hrefurl}>
+    //           <h3>
+    //             {data.AddrLine1 + " "}
+    //             {data.AddrLine2 + " "}
+    //             {data.AddrLine3 + ", "}
+    //             {data.City ? data.City + ", " : ""}
+    //             {data.State ? data.State + ", " : ""}
+    //             {data.PostalCode ? data.PostalCode + ", " : ""}
+    //             {"Australia"}
+    //           </h3></a>
+    //         </div>
+    //         <div className="pm-location">
+    //           <p>{data.BriefDescription}</p>
+    //         </div>
+    //         <div className="pm-avail">
+    //           <span>
+    //             <b>{data.TotalBedroomCount}</b> Bedreooms
+    //           </span>
+    //           <span>
+    //             <b>{data.BathroomCount}</b> Bathrooms
+    //           </span>
+    //         </div>
+    //         <div className="pm-more">
+    //           <a href={hrefurl}>Learn more</a>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   );
+    // });
   };
 
   const showHide = () => {
@@ -378,15 +496,17 @@ function Page2() {
   };
   const handleChange = (e, value, type) => {
     debugger;
+    
     if (type === "states") {
       setfilterSate(value.value);
       var newfilterSate = value.value;
       var inputdata = { state: newfilterSate, propertyType: id };
       getSuburbList(inputdata);
     } else if (type === "suburb") {
+      var valueevent = e.target.value
       // setfilterSuburb(value ? value.value : "");
-      setnewfilterSuburb(value.value);
-      filterSuburb = value ? value.value : "";
+      setnewfilterSuburb(valueevent);
+      filterSuburb = valueevent ? valueevent : "";
       setstateErrText("");
       setisSearch(true);
     } else if (type === "checkbox") {
@@ -418,7 +538,7 @@ function Page2() {
       debugger;
       var inputData = {
         AvailbleProperty: AvailbleProperty,
-        bedroom: "1",
+        bedroom: AvailbleProperty ? "1" : "0",
         bathroom: "1",
         propertyType: id, //id + "&" + typeid, //"SDA&data=Specialist%20Disability%20Accommodation",
         states: filterSate,
@@ -478,12 +598,25 @@ function Page2() {
               for (let index = 0; index < getSingle.length; index++) {
                 imageUrl = "https://servicesapi.valuecare.org.au/" + getSingle[0];
               }
+              var addressLine1 = ""
+            if(item.AddrLine1 != ""){
+              addressLine1 = item.AddrLine1 + ", "
+            }
+          
+            var addressLine2 = ""
+            if(item.AddrLine2 != ""){
+              addressLine2 = item.AddrLine2 + ", "
+            }
+            
+            var addressLine3 = ""
+            if(item.AddrLine3 != ""){
+              addressLine3 = item.AddrLine3 + ", "
+            }
               return {
                 title:
-                  item.AddrLine1 +
-                  ", " +
-                  item.AddrLine2 +
-                  ", " +
+                addressLine1 +
+                addressLine2 +
+                addressLine3  +
                   item.City +
                   ", " +
                   item.State +
@@ -697,7 +830,7 @@ function Page2() {
                 <h3 id="PropertyTypes"></h3>
                 <div className="pmt-right">
                   <p>
-                    <span id="propertyCount"></span> services found
+                    <span id="propertyCount"></span> property found
                   </p>
                   {sizeses == 0 ? (
                     <Tooltip title="Hide Map" id="ToolHideMap" arrow>
@@ -754,7 +887,7 @@ function Page2() {
                     <div className="grid-col-5">
                       <div className="filter-input">
                         {/* <label>Search Suburb/Post Code</label> */}
-                        <Autocomplete
+                        {/* <Autocomplete
                           options={managedData}
                           id="deliverytype"
                           onChange={(event, value) =>
@@ -774,14 +907,21 @@ function Page2() {
                           style={{ color: "red", fontSize: "12px" }}
                         >
                           {stateErrText}
-                        </span>
+                        </span> */}
 
-                        {/* <input
+                        <input
                           type="text"
                           id="suburb"
                           placeholder="Search Suburb/Post Code"
-                          onChange={(event) => handleChange(event, "suburb")}
-                        /> */}
+                          onChange={(event) => handleChange(event, "", "suburb")}
+                        />
+
+<span
+                          id="cname"
+                          style={{ color: "red", fontSize: "12px" }}
+                        >
+                          {stateErrText}
+                        </span>
                       </div>
                     </div>
                     <div className="grid-col-2">
@@ -806,9 +946,9 @@ function Page2() {
                         id="myCheckbox"
                         value={AvailbleProperty ? "checked" : "unchecked"}
                         checked={AvailbleProperty}
-                        onChange={(event) => handleChange(event, "checkbox")}
+                        onChange={(event) => handleChange(event,"", "checkbox")}
                       />
-                      <span>Show only available</span>
+                      <span>Show only available bedrooms</span>
                     </label>
                   </div>
                 </div>

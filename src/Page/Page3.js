@@ -38,11 +38,26 @@ function Page3() {
         // console.log(res.data.data[0][0]);
 
         if (res.data.success) {
+          var addressLine1 = ""
+            if(res.data.data[0][0].AddrLine1 != ""){
+              addressLine1 = res.data.data[0][0].AddrLine1 + ", "
+            }
+          
+            var addressLine2 = ""
+            if(res.data.data[0][0].AddrLine2 != ""){
+              addressLine2 = res.data.data[0][0].AddrLine2 + ", "
+            }
+            
+            var addressLine3 = ""
+            if(res.data.data[0][0].AddrLine3 != ""){
+              addressLine3 = res.data.data[0][0].AddrLine3 + ", "
+            }
           var Address =
-            res.data.data[0][0].AddrLine1 +
-            ", " +
+          addressLine1 +
+          addressLine2 +
+          addressLine3 +
             res.data.data[0][0].City +
-            ", " +
+            ", " + res.data.data[0][0].State+ ", " + 
             res.data.data[0][0].PostalCode +
             ", Australia";
           var imageHtml = "";
@@ -124,8 +139,8 @@ function Page3() {
 
           document.getElementById("Bedroom").innerHTML =
             res.data.data[0][0].TotalBedroomCount;
-          // document.getElementById("Bathroom").innerHTML =
-          //   res.data.data[0][0].BathroomCount;
+          document.getElementById("Bathroom").innerHTML =
+            res.data.data[0][0].BathroomCount;
           // document.getElementById("AvlBedroom").innerHTML =
           //   res.data.data[0][0].TotalAvailableBedroomCount;
           document.getElementById("AvlBedrooms").innerHTML =
@@ -140,8 +155,20 @@ function Page3() {
 
           document.getElementById("SDAProperty").innerHTML = Property_SDAHTML;
 
+          var propType = ""
+
+          if(res.data.data[0][0].PropertyType == "SDA"){
+            propType = "Specialist Disability Accommodation"
+          }
+         else  if(res.data.data[0][0].PropertyType == "SIL"){
+            propType = "Supported Independent Living"
+          }
+          else{
+            propType = res.data.data[0][0].PropertyType
+          }
+          
           document.getElementById("propertyType").innerHTML =
-          res.data.data[0][0].PropertyType + " Care";
+          propType+ " Care";
 
           console.log(Address);
         }
@@ -163,6 +190,12 @@ function Page3() {
       <h2>{data.imgSrc}</h2>
 
     })
+
+  }
+
+  const removeError = (id) =>{
+
+    document.getElementById(id).innerHTML = ""
 
   }
 
@@ -200,6 +233,10 @@ function Page3() {
     var email = document.getElementById("Email").value;
     var PostCode = document.getElementById("Postal").value;
     var Note = document.getElementById("Note").value;
+    var checkBoxTC = document.getElementById("checkbox_id")
+    var conditonstc = checkBoxTC.checked
+
+    console.log("conditonstc = ",conditonstc);
 
     var radios = document.getElementsByName("contact-when");
     var contactWhen = "";
@@ -239,6 +276,7 @@ function Page3() {
     var EnquiryAbouterr = false
     var Noteerr = false
     var areyouaerr = false
+    var conditonstcerr = false
 
 
     if (firstname == "") {
@@ -283,7 +321,7 @@ function Page3() {
 
     if (PostCode == "") {
       PostCodeerr = false
-      document.getElementById("PostCodeerr").innerHTML = "Please enter postalCode"
+      document.getElementById("PostCodeerr").innerHTML = "Please enter postal code"
     } else {
       PostCodeerr = true
       document.getElementById("PostCodeerr").innerHTML = ""
@@ -292,7 +330,7 @@ function Page3() {
 
     if (AboutString == "") {
       EnquiryAbouterr = false
-      document.getElementById("EnquiryAbouterr").innerHTML = "Please select anyOne"
+      document.getElementById("EnquiryAbouterr").innerHTML = "Please select an option"
 
     } else {
       EnquiryAbouterr = true
@@ -301,7 +339,7 @@ function Page3() {
     }
 
     if (AreYouAString == "") {
-      document.getElementById("areyouaerr").innerHTML = "Please select anyone"
+      document.getElementById("areyouaerr").innerHTML = "Please select an option"
       areyouaerr = false
 
     } else {
@@ -322,7 +360,7 @@ function Page3() {
 
     if (contactWhen == "") {
       ContactTimeerr = false
-      document.getElementById("ContactTimeerr").innerHTML = "Please select anyone"
+      document.getElementById("ContactTimeerr").innerHTML = "Please select an option"
 
     } else {
       ContactTimeerr = true
@@ -332,11 +370,21 @@ function Page3() {
 
     if (Contact == "") {
       contacterr = false
-      document.getElementById("contacterr").innerHTML = "Please select anyone"
+      document.getElementById("contacterr").innerHTML = "Please select an option"
 
     } else {
       contacterr = true
       document.getElementById("contacterr").innerHTML = ""
+    }
+    debugger
+    if(conditonstc == false){
+      conditonstcerr = false
+      document.getElementById("conditonstcerr").innerHTML = "Please accept Consent"
+
+    }else{
+      conditonstcerr = true
+      document.getElementById("conditonstcerr").innerHTML = ""
+     
     }
 
     if (firstnameerr == true &&
@@ -348,7 +396,7 @@ function Page3() {
       ContactTimeerr == true &&
       EnquiryAbouterr == true &&
       PostCodeerr == true &&
-      areyouaerr == true) {
+      areyouaerr == true && conditonstcerr == true) {
 
       var Data = {
         firstname: firstname,
@@ -464,7 +512,7 @@ function Page3() {
                   <img
                     src={
                       iconBase +
-                      "/wp-content/themes/valueCare/images/bathrooms.svg"
+                      "/wp-content/themes/valueCare/images/bedrooms.svg"
                     }
                     alt="Bedrooms"
                   />
@@ -536,6 +584,8 @@ function Page3() {
                               placeholder="Enter first name"
                               name="Fname"
                               id="Fname"
+                              // onFocus={}
+                              onFocus={() => removeError("firstnameerr")}
                             />
                             <span className="error-span" id="firstnameerr"></span>
                           </div>
@@ -550,6 +600,7 @@ function Page3() {
                               placeholder="Enter last name"
                               name="Lname"
                               id="Lname"
+                              onFocus={() => removeError("lastnameerr")}
                             />
                             <span className="error-span" id="lastnameerr"></span>
                           </div>
@@ -566,6 +617,7 @@ function Page3() {
                               placeholder="Enter phone number"
                               name="Phone"
                               id="Phone"
+                              onFocus={() => removeError("phoneerr")}
                             />
                             <span className="error-span" id="phoneerr"></span>
                           </div>
@@ -580,6 +632,7 @@ function Page3() {
                               placeholder="Enter email"
                               name="Email"
                               id="Email"
+                              onFocus={() => removeError("emailerr")}
                             />
                             <span className="error-span" id="emailerr"></span>
                           </div>
@@ -593,9 +646,10 @@ function Page3() {
                             </label>
                             <input
                               type="text"
-                              placeholder="Enter postal number"
+                              placeholder="Enter postal code"
                               name="Postal"
                               id="Postal"
+                              onFocus={() => removeError("PostCodeerr")}
                             />
                             <span className="error-span" id="PostCodeerr"></span>
                           </div>
@@ -614,6 +668,7 @@ function Page3() {
                                 <input
                                   type="radio"
                                   name="contact"
+                                  onFocus={() => removeError("contacterr")}
                                   value="Email"
                                 />{" "}
                                 Email
@@ -622,6 +677,7 @@ function Page3() {
                                 <input
                                   type="radio"
                                   name="contact"
+                                  onFocus={() => removeError("contacterr")}
                                   value="SMS"
                                 />{" "}
                                 SMS
@@ -630,6 +686,7 @@ function Page3() {
                                 <input
                                   type="radio"
                                   name="contact"
+                                  onFocus={() => removeError("contacterr")}
                                   value="Phone"
                                 />{" "}
                                 Phone
@@ -652,6 +709,7 @@ function Page3() {
                                   type="radio"
                                   name="contact-when"
                                   value="Morning"
+                                  onFocus={() => removeError("ContactTimeerr")}
                                 />{" "}
                                 Morning
                               </label>
@@ -660,6 +718,7 @@ function Page3() {
                                   type="radio"
                                   name="contact-when"
                                   value="Afternoon"
+                                  onFocus={() => removeError("ContactTimeerr")}
                                 />{" "}
                                 Afternoon
                               </label>
@@ -680,6 +739,7 @@ function Page3() {
                                 <input
                                   type="checkbox"
                                   name="inquiry-about"
+                                  onFocus={() => removeError("EnquiryAbouterr")}
                                   value="Disability Employment Services"
                                 />{" "}
                                 Disability Employment Services
@@ -688,6 +748,7 @@ function Page3() {
                                 <input
                                   type="checkbox"
                                   name="inquiry-about"
+                                  onFocus={() => removeError("EnquiryAbouterr")}
                                   value="Short Term Accommodation and Respite"
                                 />{" "}
                                 Short Term Accommodation and Respite
@@ -696,6 +757,7 @@ function Page3() {
                                 <input
                                   type="checkbox"
                                   name="inquiry-about"
+                                  onFocus={() => removeError("EnquiryAbouterr")}
                                   value="Community Services"
                                 />{" "}
                                 Community Services
@@ -704,6 +766,7 @@ function Page3() {
                                 <input
                                   type="checkbox"
                                   name="inquiry-about"
+                                  onFocus={() => removeError("EnquiryAbouterr")}
                                   value="Allied Health"
                                 />{" "}
                                 Allied Health
@@ -712,6 +775,7 @@ function Page3() {
                                 <input
                                   type="checkbox"
                                   name="inquiry-about"
+                                  onFocus={() => removeError("EnquiryAbouterr")}
                                   value="Australian Disability Enterprises"
                                 />{" "}
                                 Australian Disability Enterprises
@@ -720,6 +784,7 @@ function Page3() {
                                 <input
                                   type="checkbox"
                                   name="inquiry-about"
+                                  onFocus={() => removeError("EnquiryAbouterr")}
                                   value="Careers"
                                 />{" "}
                                 Careers
@@ -730,6 +795,7 @@ function Page3() {
                                 <input
                                   type="checkbox"
                                   name="inquiry-about"
+                                  onFocus={() => removeError("EnquiryAbouterr")}
                                   value="School Leavers Employment Services"
                                 />{" "}
                                 School Leavers Employment Services
@@ -738,6 +804,8 @@ function Page3() {
                                 <input
                                   type="checkbox"
                                   name="inquiry-about"
+                                  onFocus={() => removeError("EnquiryAbouterr")}
+                                  
                                   value="Supported Independent Living"
                                 />{" "}
                                 Supported Independent Living
@@ -747,6 +815,7 @@ function Page3() {
                                   type="checkbox"
                                   name="inquiry-about"
                                   value="Lifestyle Centres"
+                                  onFocus={() => removeError("EnquiryAbouterr")}
                                 />{" "}
                                 Lifestyle Centres
                               </label>
@@ -755,6 +824,7 @@ function Page3() {
                                   type="checkbox"
                                   name="inquiry-about"
                                   value="Support Coordination"
+                                  onFocus={() => removeError("EnquiryAbouterr")}
                                 />{" "}
                                 Support Coordination
                               </label>
@@ -763,6 +833,7 @@ function Page3() {
                                   type="checkbox"
                                   name="inquiry-about"
                                   value="Media Enquiries and Partnerships"
+                                  onFocus={() => removeError("EnquiryAbouterr")}
                                 />{" "}
                                 Media Enquiries and Partnerships
                               </label>
@@ -771,6 +842,7 @@ function Page3() {
                                   type="checkbox"
                                   name="inquiry-about"
                                   value="Other Enquiries"
+                                  onFocus={() => removeError("EnquiryAbouterr")}
                                 />{" "}
                                 Other Enquiries
                               </label>
@@ -784,7 +856,7 @@ function Page3() {
                         <label>
                           Leave a message<span>*</span>
                         </label>
-                        <textarea id="Note" name="Note"></textarea>
+                        <textarea id="Note" name="Note" onFocus={() => removeError("Noteerr")}></textarea>
                         <span className="error-span" id="Noteerr"></span>
                       </div>
                       <div className="bif-box">
@@ -796,6 +868,7 @@ function Page3() {
                             <input
                               type="checkbox"
                               name="areyoua"
+                              onFocus={() => removeError("areyouaerr")}
                               value="NDIS Participant"
                             />{" "}
                             NDIS Participant
@@ -804,6 +877,7 @@ function Page3() {
                             <input
                               type="checkbox"
                               name="areyoua"
+                              onFocus={() => removeError("areyouaerr")}
                               value="Current Value Care Client"
                             />{" "}
                             Current Value Care Client
@@ -812,6 +886,7 @@ function Page3() {
                             <input
                               type="checkbox"
                               name="areyoua"
+                              onFocus={() => removeError("areyouaerr")}
                               value="Carer / Family / Guardian"
                             />{" "}
                             Carer / Family / Guardian
@@ -820,6 +895,7 @@ function Page3() {
                             <input
                               type="checkbox"
                               name="areyoua"
+                              onFocus={() => removeError("areyouaerr")}
                               value="Referrer"
                             />{" "}
                             Referrer
@@ -829,6 +905,7 @@ function Page3() {
                               type="checkbox"
                               name="areyoua"
                               value="Other"
+                              onFocus={() => removeError("areyouaerr")}
                             />{" "}
                             Other
                           </label>
@@ -842,7 +919,7 @@ function Page3() {
                         </label>
                         <div className="check-value">
                           <label>
-                            <input type="checkbox" name="Consent" />I consent to
+                            <input type="checkbox" onFocus={() => removeError("conditonstcerr")} name="Consent" id = "checkbox_id" />I consent to
                             Value Care use, collection and disclosure of my
                             personal information, and where personal information
                             has been provided on behalf of, or in relation to
@@ -852,6 +929,7 @@ function Page3() {
                             Privacy Collection Notice (as may be changed from
                             time to time by Value Care).
                           </label>
+                          <span className="error-span" id="conditonstcerr"></span>
                           <label for="Consent" className="error"></label>
                         </div>
                       </div>
