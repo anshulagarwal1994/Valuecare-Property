@@ -19,7 +19,7 @@ const MapComponent = () => {
   //AIzaSyBwg_LyNB9AsizTdmTEX2gp-TydKCxFv84  evcm
   //AIzaSyDi24pBs1U4kD1zu2EqoyYLwT2laJdl8h4 cog-ev
   return (
-    <LoadScript googleMapsApiKey="AIzaSyBwg_LyNB9AsizTdmTEX2gp-TydKCxFv84">
+    <LoadScript googleMapsApiKey="AIzaSyBwg_LyNB9AsizTdmTEX2gp-TydKCxyv94">
       <GoogleMap
         id="marker-example"
         mapContainerStyle={{
